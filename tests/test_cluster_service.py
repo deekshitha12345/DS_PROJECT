@@ -116,6 +116,8 @@ async def test_add_node_rebalances_primary_and_preserves_ttl(monkeypatch) -> Non
 
     add_result = await cluster.add_node(NodeConfig("node-c", "127.0.0.1", 8003), NodeRuntime.create(NodeConfig("node-c", "127.0.0.1", 8003), max_items=8))
     assert add_result["ok"] is True
+    assert add_result.get("status_code") == 202
+    await cluster.wait_for_rebalance()
 
     assert runtimes["node-a"].store.get("case-primary-shift") is None
     assert runtimes["node-b"].store.get("case-primary-shift") == "value"
@@ -135,6 +137,7 @@ async def test_add_node_rebalances_replica_only(monkeypatch) -> None:
 
     add_result = await cluster.add_node(NodeConfig("node-c", "127.0.0.1", 8003), NodeRuntime.create(NodeConfig("node-c", "127.0.0.1", 8003), max_items=8))
     assert add_result["ok"] is True
+    await cluster.wait_for_rebalance()
 
     assert runtimes["node-a"].store.get("case-replica-shift") == "replica-value"
     assert runtimes["node-b"].store.get("case-replica-shift") is None
@@ -151,6 +154,7 @@ async def test_remove_node_rebalances_primary_and_replica(monkeypatch) -> None:
 
     remove_result = await cluster.remove_node("node-b")
     assert remove_result["ok"] is True
+    await cluster.wait_for_rebalance()
 
     primary_routing = cluster.manager.route_for_key("case-primary-failed")
     replica_routing = cluster.manager.route_for_key("case-replica-failed")

@@ -96,6 +96,9 @@ async def main():
     else:
         print(f"  ✗ Failed to add node-c: {result.get('message')}")
 
+    # If rebalance runs in background, wait for it to complete for verification
+    await cluster.wait_for_rebalance()
+
     # Step 5: Print ownership AFTER adding server
     ownership_after = await print_key_ownership(cluster, test_keys, "AFTER ADDING NODE")
 

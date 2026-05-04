@@ -677,6 +677,9 @@ def test_server_addition() -> None:
         runtimes[new_node.node_id] = demo_runtime
     print_response(add_result)
 
+    # Wait for background rebalance to finish so the demo prints accurate node contents
+    run_async(cluster.wait_for_rebalance())
+
     after_routing = {key: cluster.manager.route_for_key(key) for key in payloads}
     after_nodes = {node_id: inspect_node_entries(cluster, runtimes, node_id) for node_id in ["node-a", "node-b", "node-c", "node-d"]}
 
