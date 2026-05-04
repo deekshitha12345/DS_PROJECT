@@ -53,6 +53,9 @@ class ConsistentHashRing:
         ring._nodes = dict(self._nodes)
         return ring
 
+    def virtual_nodes(self) -> list[tuple[int, NodeAddress]]:
+        return [(key, self._ring[key]) for key in self._sorted_keys]
+
     def get_node(self, key: str) -> NodeAddress | None:
         if not self._ring:
             return None
