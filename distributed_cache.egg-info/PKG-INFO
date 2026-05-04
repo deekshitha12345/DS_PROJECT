@@ -1,0 +1,45 @@
+Metadata-Version: 2.4
+Name: distributed-cache
+Version: 0.1.0
+Summary: A Redis-inspired distributed cache system with sharding, replication, TTL, and LRU eviction
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi<1.0,>=0.111
+Requires-Dist: uvicorn[standard]<1.0,>=0.30
+Requires-Dist: httpx<1.0,>=0.27
+Requires-Dist: pydantic<3.0,>=2.7
+Provides-Extra: dev
+Requires-Dist: pytest<9.0,>=8.2; extra == "dev"
+Requires-Dist: pytest-cov<6.0,>=5.0; extra == "dev"
+
+# Distributed Cache System
+
+This project implements a Redis-inspired distributed cache in Python.
+
+## Design
+
+The system is split into four layers:
+
+- `distributed_cache/cache`: in-memory storage, TTL, and LRU eviction.
+- `distributed_cache/cluster`: consistent hashing, replicas, membership, and heartbeats.
+- `distributed_cache/api`: FastAPI request handlers for client and node-to-node traffic.
+- `tests`: unit and integration tests for store, routing, failure handling, and API behavior.
+
+### Folder Structure
+
+```text
+distributed_cache/
+  cache/
+  cluster/
+  api/
+tests/
+scripts/
+docker/
+```
+
+### Design Choices
+
+- FastAPI is used for a lightweight HTTP API and easy local multi-node simulation.
+- A shared hash-ring module handles sharding deterministically.
+- Each node keeps an in-memory store and can replicate writes to a configured replica.
+- A cluster manager tracks node health with heartbeat timestamps and routes around failed primaries.

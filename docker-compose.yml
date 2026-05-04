@@ -1,0 +1,51 @@
+services:
+  gateway:
+    build: .
+    command: ["python", "-m", "distributed_cache.entrypoint"]
+    environment:
+      CLUSTER_TRANSPORT: http
+      NODE_A_HOST: node-a
+      NODE_B_HOST: node-b
+      NODE_C_HOST: node-c
+    ports:
+      - "8000:8000"
+
+  node-a:
+    build: .
+    command: ["python", "-m", "distributed_cache.node_app"]
+    environment:
+      NODE_ID: node-a
+      NODE_HOST: 0.0.0.0
+      NODE_PORT: 8001
+    ports:
+      - "8001:8001"
+
+  node-b:
+    build: .
+    command: ["python", "-m", "distributed_cache.node_app"]
+    environment:
+      NODE_ID: node-b
+      NODE_HOST: 0.0.0.0
+      NODE_PORT: 8002
+    ports:
+      - "8002:8002"
+
+  node-c:
+    build: .
+    command: ["python", "-m", "distributed_cache.node_app"]
+    environment:
+      NODE_ID: node-c
+      NODE_HOST: 0.0.0.0
+      NODE_PORT: 8003
+    ports:
+      - "8003:8003"
+
+  node-d:
+    build: .
+    command: ["python", "-m", "distributed_cache.node_app"]
+    environment:
+      NODE_ID: node-d
+      NODE_HOST: 0.0.0.0
+      NODE_PORT: 8004
+    ports:
+      - "8004:8004"
