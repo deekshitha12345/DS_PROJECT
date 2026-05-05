@@ -151,11 +151,31 @@ curl http://localhost:8000/cache/my-key
 ```bash
 curl -X DELETE http://localhost:8000/cache/my-key
 ```
+**Health Check**
 
+```bash
+curl -sS http://localhost:8000/health 
+```
 **Check health:**
 
 ```bash
 curl http://localhost:8000/health
+```
+
+**Add node:**
+
+```bash
+curl -sS -X POST http://localhost:8000/internal/admin/add_node \
+  -H "Content-Type: application/json" \
+  -d '{"node_id":"node-d","host":"127.0.0.1","port":8004,"max_items":128}'
+```
+
+**Remove node:**
+
+```bash
+curl -sS -X POST http://localhost:8000/internal/admin/remove_node \
+  -H "Content-Type: application/json" \
+  -d '{"node_id":"node-d"}'
 ```
 
 ### Programmatic Usage
